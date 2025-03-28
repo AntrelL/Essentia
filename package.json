@@ -1,0 +1,13 @@
+{
+    "name": "com.antrel.essentia",
+    "version": "1.0.0",
+    "unity": "2022.3",
+    "displayName": "Essentia",
+    "description": "It is a framework that makes it easy to create beautiful, clean and secure architecture for games.",
+    "license": "MIT",
+    "author": "AntrelL",
+    "unityRelease": "7f1",
+    "dependencies": {
+      "com.unity.addressables": "1.21.21"
+    }
+}
