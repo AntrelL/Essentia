@@ -8,7 +8,6 @@ namespace Essentia
 {
 	public static class Console
 	{
-		private const string DebugModuleName = "Debug";
 		private const string EditorPartOfNamespace = Metadata.NamespaceSeparationSymbol + "Editor";
 		private const string MissingModuleNameError = "Unable to get module name if namespace is missing.";
 
@@ -72,7 +71,7 @@ namespace Essentia
 				.Last();
 
 			if (name is null)
-				LogError(MissingModuleNameError, DebugModuleName, nameof(Console));
+				LogError(MissingModuleNameError, Package.ModuleName.Debug, nameof(Console));
 
 			return name;
 		}
