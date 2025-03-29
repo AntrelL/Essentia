@@ -1,3 +1,4 @@
+using Essentia.Reflection;
 using System;
 using System.Linq;
 using System.Text;
@@ -8,8 +9,7 @@ namespace Essentia
 	public static class Console
 	{
 		private const string DebugModuleName = "Debug";
-		private const string NamespaceSeparationSymbol = ".";
-		private const string EditorPartOfNamespace = NamespaceSeparationSymbol + "Editor";
+		private const string EditorPartOfNamespace = Metadata.NamespaceSeparationSymbol + "Editor";
 		private const string MissingModuleNameError = "Unable to get module name if namespace is missing.";
 
 		public static void Log(object @object, string moduleName = null, string typeName = null) =>
@@ -68,7 +68,7 @@ namespace Essentia
 		{
 			string name = type.Namespace
 				?.Remove(EditorPartOfNamespace)
-				.Split(NamespaceSeparationSymbol)
+				.Split(Metadata.NamespaceSeparationSymbol)
 				.Last();
 
 			if (name is null)
