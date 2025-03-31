@@ -8,5 +8,7 @@ namespace Essentia.Reflection
 		public const string EntryPointMethodName = "Main";
 		public const BindingFlags EntryPointMethodBindingFlags = 
 			BindingFlags.NonPublic | BindingFlags.Static;
+
+		public const string GitKeepFileName = ".gitkeep";
 	}
 }

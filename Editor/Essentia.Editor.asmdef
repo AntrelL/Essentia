@@ -1,7 +1,9 @@
 {
     "name": "Essentia.Editor",
     "rootNamespace": "Essentia.Editor",
-    "references": [],
+    "references": [
+        "GUID:6c999a67c0a584d40927b8f7bb50034c"
+    ],
     "includePlatforms": [
         "Editor"
     ],

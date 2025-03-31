@@ -7,6 +7,7 @@ namespace Essentia.Reflection
 			public const string Misc = nameof(Misc);
 			public const string Debug = nameof(Debug);
 			public const string Reflection = nameof(Reflection);
+			public const string Deployment = nameof(Deployment);
 			public const string Infrastructure = nameof(Infrastructure);
 		}
 	}
