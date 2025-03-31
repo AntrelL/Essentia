@@ -1,5 +1,6 @@
 using Essentia.Reflection;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
 
 namespace Essentia.Deployment.Editor
 {
@@ -14,6 +15,9 @@ namespace Essentia.Deployment.Editor
 
 		private const string UserFoldersGeneratedMessage = "Folder structure for user data generated successfully.";
 		private const string PackageFoldersGeneratedMessage = "Folder structure for package data generated successfully.";
+
+		private const string AddressablesInitializedMessage = "Addressables initialized.";
+		private const string FailedToInitializeAddressablesError = "Failed to initialize addressables.";
 
 		private const string FolderPathWithFolderStructures = 
 			Package.Path + "/Editor/Deployment/FolderArchitecture/FolderStructures/";
@@ -50,6 +54,7 @@ namespace Essentia.Deployment.Editor
 			}
 
 			GenerateFolderStructures();
+			InitializeAddressables();
 
 			return true;
         }
@@ -58,6 +63,19 @@ namespace Essentia.Deployment.Editor
 		{
 			FolderArchitecture.Generate(FolderStructurePathForPackageData, successMessage: PackageFoldersGeneratedMessage);
 			FolderArchitecture.Generate(FolderStructurePathForUserData, successMessage: UserFoldersGeneratedMessage);
+		}
+
+		private static void InitializeAddressables()
+		{
+			var settings = AddressableAssetSettingsDefaultObject.GetSettings(true);
+
+			if (settings is null)
+			{
+				Console.LogError(FailedToInitializeAddressablesError, moduleName: Package.ModuleName.Deployment);
+				return;
+			}
+
+			Console.Log(AddressablesInitializedMessage, moduleName: Package.ModuleName.Deployment);
 		}
 	}
 }
