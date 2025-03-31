@@ -10,5 +10,7 @@ namespace Essentia.Reflection
 			BindingFlags.NonPublic | BindingFlags.Static;
 
 		public const string GitKeepFileName = ".gitkeep";
+		public const string AssetFileExtension = ".asset";
+		public const string AssetRootFolderName = "Assets";
 	}
 }

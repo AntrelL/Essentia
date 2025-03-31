@@ -6,19 +6,36 @@ namespace Essentia.Deployment.Editor
 {
     public static class FolderArchitecture
     {
+		private const string FolderStructureNotFoundErrorPart = "Folder structure not found at path";
 		private const string NullFolderStructureError = "Folder structure cannot be null.";
 		private const string FolderStructureGeneratedMessage = "Folder structure generated successfully.";
 		private const string GitKeepFilesDeletedMessage = Metadata.GitKeepFileName + " files deleted successfully.";
 
 		public static FolderStructure LoadFolderStructure(string path)
 		{
-			return AssetDatabase.LoadAssetAtPath<FolderStructure>(path);
+			FolderStructure folderStructure = AssetDatabase.LoadAssetAtPath<FolderStructure>(path);
+
+			if (folderStructure is null)
+			{
+				Console.LogError(
+					$"{FolderStructureNotFoundErrorPart} {path}.",
+					moduleName: Package.ModuleName.Deployment);
+			}
+
+			return folderStructure;
 		}
 
-		public static void Generate(string pathToFolderStructure, bool createGitKeepFiles = true) =>
-			Generate(LoadFolderStructure(pathToFolderStructure), createGitKeepFiles);
+		public static void Generate(
+			string pathToFolderStructure, bool createGitKeepFiles = true, string successMessage = null)
+		{
+			FolderStructure folderStructure = LoadFolderStructure(pathToFolderStructure);
 
-		public static void Generate(FolderStructure folderStructure, bool createGitKeepFiles = true)
+			if (folderStructure is not null)
+				Generate(folderStructure, createGitKeepFiles, successMessage);
+		}
+
+		public static void Generate(
+			FolderStructure folderStructure, bool createGitKeepFiles = true, string successMessage = null)
 		{
 			if (folderStructure is null)
 			{
@@ -36,7 +53,7 @@ namespace Essentia.Deployment.Editor
 			}
 
 			AssetDatabase.Refresh();
-			Console.Log(FolderStructureGeneratedMessage, moduleName: Package.ModuleName.Deployment);
+			Console.Log(successMessage ?? FolderStructureGeneratedMessage, moduleName: Package.ModuleName.Deployment);
 		}
 
 		public static void DeleteGitkeepFiles(string rootFolderName)
