@@ -1,3 +1,5 @@
+using System.Linq;
+
 namespace Essentia
 {
 	public static class StringExtensions
@@ -5,6 +7,11 @@ namespace Essentia
 		public static string Remove(this string source, string substring)
 		{
 			return source.Replace(substring, string.Empty);
+		}
+
+		public static string Reverse(this string source)
+		{
+			return new string(source.Reverse<char>().ToArray());
 		}
 	}
 }
