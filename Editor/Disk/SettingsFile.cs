@@ -1,5 +1,7 @@
+using Essentia.Deployment.Editor;
 using System;
 using UnityEditor;
+using UnityEditor.AddressableAssets;
 using UnityEngine;
 
 namespace Essentia.Disk.Editor
@@ -30,13 +32,19 @@ namespace Essentia.Disk.Editor
 			T asset = ScriptableObject.CreateInstance<T>();
 			AssetDatabase.CreateAsset(asset, path);
 
-            return new(asset, path);
+			AssetDatabase.SaveAssets();
+			return new(asset, path);
 		}
 
-		public static SettingsFile<T> Load(string path)
+		public static SettingsFile<T> Load(string path, bool createIfNotFound = false)
 		{
             if (TryLoad(path, out SettingsFile<T> settingsFile) == false)
-                Console.LogError<SettingsFile<T>>($"{FailedToLoadAssetAtPathErrorPart} {path}.");
+            {
+                if (createIfNotFound)
+                    return Create(path);
+
+			    Console.LogError<SettingsFile<T>>($"{FailedToLoadAssetAtPathErrorPart} {path}."); 
+			}
 
 			return settingsFile;
 		}
@@ -63,10 +71,22 @@ namespace Essentia.Disk.Editor
                 Save();
         }
 
-        public void Save()
+        public SettingsFile<T> MarkAsAddressable(string groupName)
         {
-            EditorUtility.SetDirty(_asset);
-            AssetDatabase.SaveAssets();
-        }
+			var settings = AddressableAssetSettingsDefaultObject.Settings;
+
+			if (settings is null)
+				Console.LogError<SettingsFile<T>>(Installer.InvalidDeployedPackageError);
+            else
+                settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(Path), settings.FindGroup(groupName));
+
+			return this;
+		}
+
+		public void Save()
+		{
+			EditorUtility.SetDirty(_asset);
+			AssetDatabase.SaveAssets();
+		}
 	}
 }

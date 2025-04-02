@@ -75,6 +75,8 @@ namespace Essentia.Deployment.Editor
 				return;
 			}
 
+			settings.CreateGroup(Package.SystemAddressablesGroupName, false, false, false, null);
+
 			Console.Log(AddressablesInitializedMessage, moduleName: Package.ModuleName.Deployment);
 		}
 	}

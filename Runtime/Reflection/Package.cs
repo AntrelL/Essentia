@@ -6,6 +6,7 @@ namespace Essentia.Reflection
 		public const string TechnicalName = "com.antrel.essentia";
 		public const string Path = "Packages/" + TechnicalName;
 		public const string PathToDynamicDataFolder = Metadata.AssetRootFolderName + "/" + Name + "Data";
+		public const string SystemAddressablesGroupName = "System";
 
 		public static class ModuleName
         {
