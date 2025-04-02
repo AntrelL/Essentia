@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Reflection;
 
 namespace Essentia.Reflection
@@ -10,7 +12,24 @@ namespace Essentia.Reflection
 			BindingFlags.NonPublic | BindingFlags.Static;
 
 		public const string GitKeepFileName = ".gitkeep";
-		public const string AssetFileExtension = ".asset";
+		public const string AssetExtension = ".asset";
+		public const string PrefabExtension = ".prefab";
 		public const string AssetRootFolderName = "Assets";
+
+		private const string EditorPartOfNamespace = NamespaceSeparationSymbol + "Editor";
+		private const string MissingModuleNameError = "Unable to get module name if namespace is missing.";
+
+		public static string GetModuleName(Type type)
+		{
+			string name = type.Namespace
+				?.Remove(EditorPartOfNamespace)
+				.Split(NamespaceSeparationSymbol)
+				.Last();
+
+			if (name is null)
+				Console.LogError(MissingModuleNameError, Package.ModuleName.Reflection, nameof(Metadata));
+
+			return name;
+		}
 	}
 }

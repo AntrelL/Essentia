@@ -1,6 +1,5 @@
 using Essentia.Reflection;
 using System;
-using System.Linq;
 using System.Text;
 using UnityEngine;
 
@@ -8,9 +7,6 @@ namespace Essentia
 {
 	public static class Console
 	{
-		private const string EditorPartOfNamespace = Metadata.NamespaceSeparationSymbol + "Editor";
-		private const string MissingModuleNameError = "Unable to get module name if namespace is missing.";
-
 		public static void Log(object @object, string moduleName = null, string typeName = null) =>
 			Debug.Log(CreateCompositeMessage(@object.ToString(), moduleName, typeName));
 
@@ -39,7 +35,7 @@ namespace Essentia
 		{
 			Type type = typeof(T);
 			string typeName = isTypeName ? type.Name : null;
-			string moduleName = isModuleName ? GetModuleName(type) : null;
+			string moduleName = isModuleName ? Metadata.GetModuleName(type) : null;
 
 			return CreateCompositeMessage(message, moduleName, typeName);
 		}
@@ -61,19 +57,6 @@ namespace Essentia
 			completedMessage.Append(message);
 
 			return completedMessage.ToString().Trim();
-		}
-
-		public static string GetModuleName(Type type)
-		{
-			string name = type.Namespace
-				?.Remove(EditorPartOfNamespace)
-				.Split(Metadata.NamespaceSeparationSymbol)
-				.Last();
-
-			if (name is null)
-				LogError(MissingModuleNameError, Package.ModuleName.Debug, nameof(Console));
-
-			return name;
 		}
 	}
 }

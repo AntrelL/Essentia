@@ -23,10 +23,10 @@ namespace Essentia.Deployment.Editor
 			Package.Path + "/Editor/Deployment/FolderArchitecture/FolderStructures/";
 
 		private const string FolderStructurePathForPackageData = 
-			FolderPathWithFolderStructures + "DynamicPackageData" + Metadata.AssetFileExtension;
+			FolderPathWithFolderStructures + "DynamicPackageData" + Metadata.AssetExtension;
 
 		private const string FolderStructurePathForUserData = 
-			FolderPathWithFolderStructures + "UserData" + Metadata.AssetFileExtension;
+			FolderPathWithFolderStructures + "UserData" + Metadata.AssetExtension;
 
 		public static bool IsPackageDeployed => AssetDatabase.IsValidFolder(Package.PathToDynamicDataFolder);
 
