@@ -10,6 +10,7 @@ namespace Essentia.Reflection
 		public static class ModuleName
         {
 			public const string Misc = nameof(Misc);
+			public const string Disk = nameof(Disk);
 			public const string Debug = nameof(Debug);
 			public const string Reflection = nameof(Reflection);
 			public const string Deployment = nameof(Deployment);
