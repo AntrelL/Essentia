@@ -6,64 +6,64 @@ namespace Essentia.Deployment.Editor
 {
     public static class FolderArchitecture
     {
-		private const string FolderStructureNotFoundErrorPart = "Folder structure not found at path";
-		private const string NullFolderStructureError = "Folder structure cannot be null.";
-		private const string FolderStructureGeneratedMessage = "Folder structure generated successfully.";
-		private const string GitKeepFilesDeletedMessage = Metadata.GitKeepFileName + " files deleted successfully.";
+        private const string FolderStructureNotFoundErrorPart = "Folder structure not found at path";
+        private const string NullFolderStructureError = "Folder structure cannot be null.";
+        private const string FolderStructureGeneratedMessage = "Folder structure generated successfully.";
+        private const string GitKeepFilesDeletedMessage = Metadata.GitKeepFileName + " files deleted successfully.";
 
-		private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(Package.ModuleName.Deployment, null);
+        private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(Package.ModuleName.Deployment, null);
 
-		public static FolderStructure LoadFolderStructure(string path)
-		{
-			FolderStructure folderStructure = AssetDatabase.LoadAssetAtPath<FolderStructure>(path);
+        public static FolderStructure LoadFolderStructure(string path)
+        {
+            FolderStructure folderStructure = AssetDatabase.LoadAssetAtPath<FolderStructure>(path);
 
-			if (folderStructure is null)
-				Console.LogError($"{FolderStructureNotFoundErrorPart} {path}.", s_consoleOutputConfig);
-			
-			return folderStructure;
-		}
+            if (folderStructure is null)
+                Console.LogError($"{FolderStructureNotFoundErrorPart} {path}.", s_consoleOutputConfig);
+            
+            return folderStructure;
+        }
 
-		public static void Generate(
-			string pathToFolderStructure, bool createGitKeepFiles = true, string successMessage = null)
-		{
-			FolderStructure folderStructure = LoadFolderStructure(pathToFolderStructure);
+        public static void Generate(
+            string pathToFolderStructure, bool createGitKeepFiles = true, string successMessage = null)
+        {
+            FolderStructure folderStructure = LoadFolderStructure(pathToFolderStructure);
 
-			if (folderStructure is not null)
-				Generate(folderStructure, createGitKeepFiles, successMessage);
-		}
+            if (folderStructure is not null)
+                Generate(folderStructure, createGitKeepFiles, successMessage);
+        }
 
-		public static void Generate(
-			FolderStructure folderStructure, bool createGitKeepFiles = true, string successMessage = null)
-		{
-			if (folderStructure is null)
-			{
-				Console.LogError(NullFolderStructureError, s_consoleOutputConfig);
-				return;
-			}
+        public static void Generate(
+            FolderStructure folderStructure, bool createGitKeepFiles = true, string successMessage = null)
+        {
+            if (folderStructure is null)
+            {
+                Console.LogError(NullFolderStructureError, s_consoleOutputConfig);
+                return;
+            }
 
-			foreach (string folder in folderStructure.Folders)
-			{
-				if (Directory.Exists(folder) == false)
-					Directory.CreateDirectory(folder);
+            foreach (string folder in folderStructure.Folders)
+            {
+                if (Directory.Exists(folder) == false)
+                    Directory.CreateDirectory(folder);
 
-				if (createGitKeepFiles)
-					File.WriteAllText(Path.Combine(folder, Metadata.GitKeepFileName), string.Empty);
-			}
+                if (createGitKeepFiles)
+                    File.WriteAllText(Path.Combine(folder, Metadata.GitKeepFileName), string.Empty);
+            }
 
-			AssetDatabase.Refresh();
-			Console.Log(successMessage ?? FolderStructureGeneratedMessage, s_consoleOutputConfig);
-		}
+            AssetDatabase.Refresh();
+            Console.Log(successMessage ?? FolderStructureGeneratedMessage, s_consoleOutputConfig);
+        }
 
-		public static void DeleteGitkeepFiles(string rootFolderName)
-		{
-			string[] gitkeepFiles = Directory.GetFiles(
-				rootFolderName, Metadata.GitKeepFileName, SearchOption.AllDirectories);
+        public static void DeleteGitkeepFiles(string rootFolderName)
+        {
+            string[] gitkeepFiles = Directory.GetFiles(
+                rootFolderName, Metadata.GitKeepFileName, SearchOption.AllDirectories);
 
-			foreach (string gitkeepFile in gitkeepFiles)
-				File.Delete(gitkeepFile);
+            foreach (string gitkeepFile in gitkeepFiles)
+                File.Delete(gitkeepFile);
 
-			AssetDatabase.Refresh();
-			Console.Log(GitKeepFilesDeletedMessage, s_consoleOutputConfig);
-		}
-	}
+            AssetDatabase.Refresh();
+            Console.Log(GitKeepFilesDeletedMessage, s_consoleOutputConfig);
+        }
+    }
 }

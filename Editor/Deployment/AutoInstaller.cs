@@ -10,5 +10,5 @@ namespace Essentia.Deployment.Editor
             if (Installer.IsPackageDeployed == false)
                 Installer.Deploy();
         }
-	}
+    }
 }

@@ -1,6 +1,6 @@
 namespace Essentia
 {
-	public abstract class Program
-	{
-	}
+    public abstract class Program
+    {
+    }
 }

@@ -9,8 +9,8 @@ namespace Essentia.Disk.Editor
 {
     public static class ResourceScanner
     {
-		private static readonly ConsoleOutputConfig s_consoleOutputConfig = 
-			new(Package.ModuleName.Disk, nameof(ResourceScanner));
+        private static readonly ConsoleOutputConfig s_consoleOutputConfig = 
+            new(Package.ModuleName.Disk, nameof(ResourceScanner));
 
         public static List<AddressableAssetEntry> FindAll(Predicate<AddressableAssetEntry> match = null)
         {
@@ -22,30 +22,30 @@ namespace Essentia.Disk.Editor
                 return null;
             }
 
-			List<AddressableAssetEntry> resources = new();
+            List<AddressableAssetEntry> resources = new();
 
-			foreach (AddressableAssetGroup group in settings.groups)
-			{
-				foreach (AddressableAssetEntry entry in group.entries)
-				{
-					if (CheckCompliance(entry, match))
-						resources.Add(entry);
-				}				
-			}
+            foreach (AddressableAssetGroup group in settings.groups)
+            {
+                foreach (AddressableAssetEntry entry in group.entries)
+                {
+                    if (CheckCompliance(entry, match))
+                        resources.Add(entry);
+                }				
+            }
 
-			return resources;
-		}
+            return resources;
+        }
 
-		public static List<AddressableAssetEntry> FindPrefabs(Predicate<AddressableAssetEntry> match = null)
-		{
-			return FindAll(
-				entry => entry.AssetPath.EndsWith(Metadata.PrefabExtension) &&
-				CheckCompliance(entry, match));
-		}
+        public static List<AddressableAssetEntry> FindPrefabs(Predicate<AddressableAssetEntry> match = null)
+        {
+            return FindAll(
+                entry => entry.AssetPath.EndsWith(Metadata.PrefabExtension) &&
+                CheckCompliance(entry, match));
+        }
 
-		private static bool CheckCompliance<T>(T @object, Predicate<T> predicate = null)
-		{
-			return predicate is null || predicate.Invoke(@object);
-		}
-	}
+        private static bool CheckCompliance<T>(T @object, Predicate<T> predicate = null)
+        {
+            return predicate is null || predicate.Invoke(@object);
+        }
+    }
 }
