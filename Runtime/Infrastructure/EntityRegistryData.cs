@@ -5,6 +5,6 @@ namespace Essentia.Infrastructure
 {
     public class EntityRegistryData : ScriptableObject
     {
-        public Dictionary<string, string> Value;
+        [HideInInspector] public List<EntityConnectionData> Connections;
     }
 }

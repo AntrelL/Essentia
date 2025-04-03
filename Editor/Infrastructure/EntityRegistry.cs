@@ -5,61 +5,67 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 using UnityEditor.AddressableAssets.Settings;
 
 using UnityGameObject = UnityEngine.GameObject;
 
 namespace Essentia.Infrastructure.Editor
 {
-    public static class EntityRegistry
-    {
-        private const string NoMatchingEntityTypeErrorPart = "No matching type for entity named";
-        private const string MultipleMatchingEntityTypesErrorPart = "Multiple matching types for entity named";
-
-		private const string FilePath = Package.PathToDynamicDataFolder + "/" + 
+    public class EntityRegistry : IPreprocessBuildWithReport
+	{
+		private const string DataFilePath = Package.PathToDynamicDataFolder + "/" +
 			nameof(EntityRegistryData) + Metadata.AssetExtension;
 
+		private const string NoMatchingEntityTypeErrorPart = "No matching type for entity named";
+        private const string MultipleMatchingEntityTypesErrorPart = "Multiple matching types for entity named";
+
+		public int callbackOrder => 0;
+
+		[InitializeOnLoadMethod]
 		[MenuItem(Package.Name + "/Update Entity Registry")]
 		public static void Update()
 		{
-			Dictionary<string, string> entityData = GetAllEntitiesData();
+			List<EntityConnectionData> entityConnections = GetEntityConnections();
 
 			if (Installer.IsPackageDeployed == false)
 			{
-				Console.LogError(Installer.InvalidDeployedPackageError, 
-					Package.ModuleName.Infrastructure, nameof(EntityRegistry));
-
+				Console.LogError<EntityRegistry>(Installer.InvalidDeployedPackageError);
 				return;
 			}
 
-			SettingsFile<EntityRegistryData>.Load(FilePath, true)
+			SettingsFile<EntityRegistryData>.Load(DataFilePath, true)
 				.MarkAsAddressable(Package.SystemAddressablesGroupName)
-				.Edit(entityRegistryData => entityRegistryData.Value = entityData, true);
+				.Edit(entityRegistryData => entityRegistryData.Connections = entityConnections, true);
 		}
 
-		private static Dictionary<string, string> GetAllEntitiesData()
+		public void OnPreprocessBuild(BuildReport report) => Update();
+
+		private static List<EntityConnectionData> GetEntityConnections()
 		{
 			List<AddressableAssetEntry> prefabs = ResourceScanner.FindPrefabs();
+
 			Type[] allTypes = AppDomain.CurrentDomain.GetAssemblies()
 				.SelectMany(assembly => assembly.GetTypes())
 				.ToArray();
 
 			return prefabs
-				.Select(prefab => GetEntityData(prefab, allTypes))
-				.Where(pair => pair.Key is not null)
-				.ToDictionary(pair => pair.Key, pair => pair.Value);
+				.Select(prefab => GetEntityConnection(prefab, allTypes))
+				.Where(connectionData => connectionData.TypeName is not null)
+				.ToList();
 		}
 
-		private static KeyValuePair<string, string> GetEntityData(AddressableAssetEntry entry, Type[] allTypes)
+		private static EntityConnectionData GetEntityConnection(AddressableAssetEntry entry, Type[] allTypes)
         {
 			UnityGameObject prefab = AssetDatabase.LoadAssetAtPath<UnityGameObject>(entry.AssetPath);
-            KeyValuePair<string, string> emptyPair = new(null, null);
+			EntityConnectionData emptyConnectionData = new(null, null);
 
             if (prefab.TryGetComponent(out SocketHandle socketHandle) == false)
-                return emptyPair;
+                return emptyConnectionData;
 
             if (socketHandle.IsEntity == false)
-                return emptyPair;
+                return emptyConnectionData;
 
             Type[] suitableTypes = allTypes
                 .Where(type => 
@@ -68,26 +74,22 @@ namespace Essentia.Infrastructure.Editor
                 .ToArray();
 
             if (CheckNumberOfEntityTypes(suitableTypes, prefab.name) == false)
-                return emptyPair;
+                return emptyConnectionData;
 
-            return new(suitableTypes[0].FullName, entry.address);    
+            return new(suitableTypes[0].FullName, entry.address);
 		}
 
 		private static bool CheckNumberOfEntityTypes(Type[] types, string prefabName)
         {
 			if (types.Length == 0)
 			{
-				Console.LogError($"{NoMatchingEntityTypeErrorPart} {prefabName}.",
-					Package.ModuleName.Infrastructure, nameof(EntityRegistry));
-
+				Console.LogError<EntityRegistry>($"{NoMatchingEntityTypeErrorPart} {prefabName}.");
 				return false;
 			}
 
 			if (types.Length > 1)
 			{
-				Console.LogError($"{MultipleMatchingEntityTypesErrorPart} {prefabName}.",
-					Package.ModuleName.Infrastructure, nameof(EntityRegistry));
-
+				Console.LogError<EntityRegistry>($"{MultipleMatchingEntityTypesErrorPart} {prefabName}.");
 				return false;
 			}
 
