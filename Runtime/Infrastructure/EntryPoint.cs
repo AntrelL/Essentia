@@ -9,9 +9,12 @@ namespace Essentia.Infrastructure
 {
     public class EntryPoint : MonoBehaviour
     {
-		private const string MissingMainGameTypeError = "Main game type not found.";
-		private const string MultipleMainGameTypesError = "Only one type should inherit from type " + nameof(Program) + ".";
 		private const string MissingEntryPointMethodError = "Entry point method not found.";
+		private const string MissingMainGameTypeError = "Main game type not found.";
+		private const string MultipleMainGameTypesError = 
+			"Only one type should inherit from type " + nameof(Program) + ".";
+
+		private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(typeof(EntryPoint), true, true);
 
 		private void Awake()
 		{
@@ -41,13 +44,13 @@ namespace Essentia.Infrastructure
 		{
 			if (derivedTypes.Count == 0)
 			{
-				Console.LogError<EntryPoint>(MissingMainGameTypeError);
+				Console.LogError(MissingMainGameTypeError, s_consoleOutputConfig);
 				return false;
 			}
 
 			if (derivedTypes.Count > 1)
 			{
-				Console.LogError<EntryPoint>(MultipleMainGameTypesError);
+				Console.LogError(MultipleMainGameTypesError, s_consoleOutputConfig);
 				return false;
 			}
 
@@ -62,7 +65,7 @@ namespace Essentia.Infrastructure
 
 			if (entryPointMethod is null || entryPointMethod.GetParameters().Length != 0)
 			{
-				Console.LogError<EntryPoint>(MissingEntryPointMethodError);
+				Console.LogError(MissingEntryPointMethodError, s_consoleOutputConfig);
 				return false;
 			}
 

@@ -9,13 +9,16 @@ namespace Essentia.Disk.Editor
 {
     public static class ResourceScanner
     {
+		private static readonly ConsoleOutputConfig s_consoleOutputConfig = 
+			new(Package.ModuleName.Disk, nameof(ResourceScanner));
+
         public static List<AddressableAssetEntry> FindAll(Predicate<AddressableAssetEntry> match = null)
         {
             AddressableAssetSettings settings = AddressableAssetSettingsDefaultObject.Settings;
 
             if (settings is null)
             {
-                Console.LogError(Installer.InvalidDeployedPackageError, Package.ModuleName.Disk, nameof(ResourceScanner));
+                Console.LogError(Installer.InvalidDeployedPackageError, s_consoleOutputConfig);
                 return null;
             }
 

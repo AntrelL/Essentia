@@ -12,6 +12,9 @@ namespace Essentia.Infrastructure
 
         private const string EntityAddressNotFoundErrorPart = "Entity address not found, entity type:";
 
+        private static readonly ConsoleOutputConfig s_consoleOutputConfig =
+            new(Package.ModuleName.Infrastructure, nameof(EntityRegistryReader));
+
         private static List<EntityConnectionData> s_data;
 
         static EntityRegistryReader()
@@ -26,11 +29,8 @@ namespace Essentia.Infrastructure
                 connectionData => connectionData.TypeName == entityType.FullName);
 
             if (entityConnectionData is null)
-            {
-                Console.LogError($"{EntityAddressNotFoundErrorPart} {entityType.FullName}.",
-                    Package.ModuleName.Infrastructure, nameof(EntityRegistryReader));
-            }
-
+                Console.LogError($"{EntityAddressNotFoundErrorPart} {entityType.FullName}.", s_consoleOutputConfig);
+            
             return entityConnectionData?.Address;
         }
     }

@@ -19,6 +19,9 @@ namespace Essentia.Reflection
 		private const string EditorPartOfNamespace = NamespaceSeparationSymbol + "Editor";
 		private const string MissingModuleNameError = "Unable to get module name if namespace is missing.";
 
+		private static readonly ConsoleOutputConfig s_consoleOutputConfig = 
+			new(Package.ModuleName.Reflection, nameof(Metadata));
+
 		public static string GetModuleName(Type type)
 		{
 			string name = type.Namespace
@@ -27,7 +30,7 @@ namespace Essentia.Reflection
 				.Last();
 
 			if (name is null)
-				Console.LogError(MissingModuleNameError, Package.ModuleName.Reflection, nameof(Metadata));
+				Console.LogError(MissingModuleNameError, s_consoleOutputConfig);
 
 			return name;
 		}

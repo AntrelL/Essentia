@@ -18,6 +18,8 @@ namespace Essentia.Infrastructure.Editor
 		private const string NoMatchingEntityTypeErrorPart = "No matching type for entity named";
         private const string MultipleMatchingEntityTypesErrorPart = "Multiple matching types for entity named";
 
+		private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(typeof(EntityRegistry), true, true);
+
 		public int callbackOrder => 0;
 
 		[InitializeOnLoadMethod]
@@ -28,7 +30,7 @@ namespace Essentia.Infrastructure.Editor
 
 			if (Installer.IsPackageDeployed == false)
 			{
-				Console.LogError<EntityRegistry>(Installer.InvalidDeployedPackageError);
+				Console.LogError(Installer.InvalidDeployedPackageError, s_consoleOutputConfig);
 				return;
 			}
 
@@ -80,13 +82,13 @@ namespace Essentia.Infrastructure.Editor
         {
 			if (types.Length == 0)
 			{
-				Console.LogError<EntityRegistry>($"{NoMatchingEntityTypeErrorPart} {prefabName}.");
+				Console.LogError($"{NoMatchingEntityTypeErrorPart} {prefabName}.", s_consoleOutputConfig);
 				return false;
 			}
 
 			if (types.Length > 1)
 			{
-				Console.LogError<EntityRegistry>($"{MultipleMatchingEntityTypesErrorPart} {prefabName}.");
+				Console.LogError($"{MultipleMatchingEntityTypesErrorPart} {prefabName}.", s_consoleOutputConfig);
 				return false;
 			}
 

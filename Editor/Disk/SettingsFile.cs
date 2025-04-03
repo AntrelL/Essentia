@@ -9,7 +9,10 @@ namespace Essentia.Disk.Editor
     public class SettingsFile<T> where T : ScriptableObject
 	{
         private const string FailedToLoadAssetAtPathErrorPart = "Failed to load asset at path";
-        private const string AssetAlreadyExistsErrorPart = "Error creating asset, asset with this name already exists, path:";
+        private const string AssetAlreadyExistsErrorPart = 
+            "Error creating asset, asset with this name already exists, path:";
+
+        private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(typeof(SettingsFile<T>), true, true);
 
 		private T _asset;
 
@@ -25,7 +28,7 @@ namespace Essentia.Disk.Editor
 		{
             if (Exists(path))
             {
-                Console.LogError<SettingsFile<T>>($"{AssetAlreadyExistsErrorPart} {path}.");
+                Console.LogError($"{AssetAlreadyExistsErrorPart} {path}.", s_consoleOutputConfig);
                 return null;
             }
 
@@ -43,7 +46,7 @@ namespace Essentia.Disk.Editor
                 if (createIfNotFound)
                     return Create(path);
 
-			    Console.LogError<SettingsFile<T>>($"{FailedToLoadAssetAtPathErrorPart} {path}."); 
+			    Console.LogError($"{FailedToLoadAssetAtPathErrorPart} {path}.", s_consoleOutputConfig); 
 			}
 
 			return settingsFile;
@@ -76,7 +79,7 @@ namespace Essentia.Disk.Editor
 			var settings = AddressableAssetSettingsDefaultObject.Settings;
 
 			if (settings is null)
-				Console.LogError<SettingsFile<T>>(Installer.InvalidDeployedPackageError);
+				Console.LogError(Installer.InvalidDeployedPackageError, s_consoleOutputConfig);
             else
                 settings.CreateOrMoveEntry(AssetDatabase.AssetPathToGUID(Path), settings.FindGroup(groupName));
 

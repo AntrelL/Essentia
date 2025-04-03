@@ -28,19 +28,21 @@ namespace Essentia.Deployment.Editor
 		private const string FolderStructurePathForUserData = 
 			FolderPathWithFolderStructures + "UserData" + Metadata.AssetExtension;
 
+		private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(Package.ModuleName.Deployment, null);
+
 		public static bool IsPackageDeployed => AssetDatabase.IsValidFolder(Package.PathToDynamicDataFolder);
 
 		public static void Deploy()
         {
-			Console.Log(DeploymentStartMessage, moduleName: Package.ModuleName.Deployment);
+			Console.Log(DeploymentStartMessage, s_consoleOutputConfig);
 
             if (TryDeploy(out string errorMessage) == false)
             {
-				Console.LogError(errorMessage, moduleName: Package.ModuleName.Deployment);
+				Console.LogError(errorMessage, s_consoleOutputConfig);
 				return;
 			}
 
-            Console.Log(PackageDeployedSuccessfullyMessage, moduleName: Package.ModuleName.Deployment);
+            Console.Log(PackageDeployedSuccessfullyMessage, s_consoleOutputConfig);
 		}
 
         private static bool TryDeploy(out string errorMessage)
@@ -71,13 +73,13 @@ namespace Essentia.Deployment.Editor
 
 			if (settings is null)
 			{
-				Console.LogError(FailedToInitializeAddressablesError, moduleName: Package.ModuleName.Deployment);
+				Console.LogError(FailedToInitializeAddressablesError, s_consoleOutputConfig);
 				return;
 			}
 
 			settings.CreateGroup(Package.SystemAddressablesGroupName, false, false, false, null);
 
-			Console.Log(AddressablesInitializedMessage, moduleName: Package.ModuleName.Deployment);
+			Console.Log(AddressablesInitializedMessage, s_consoleOutputConfig);
 		}
 	}
 }

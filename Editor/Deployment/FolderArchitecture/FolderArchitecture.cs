@@ -11,17 +11,15 @@ namespace Essentia.Deployment.Editor
 		private const string FolderStructureGeneratedMessage = "Folder structure generated successfully.";
 		private const string GitKeepFilesDeletedMessage = Metadata.GitKeepFileName + " files deleted successfully.";
 
+		private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(Package.ModuleName.Deployment, null);
+
 		public static FolderStructure LoadFolderStructure(string path)
 		{
 			FolderStructure folderStructure = AssetDatabase.LoadAssetAtPath<FolderStructure>(path);
 
 			if (folderStructure is null)
-			{
-				Console.LogError(
-					$"{FolderStructureNotFoundErrorPart} {path}.",
-					moduleName: Package.ModuleName.Deployment);
-			}
-
+				Console.LogError($"{FolderStructureNotFoundErrorPart} {path}.", s_consoleOutputConfig);
+			
 			return folderStructure;
 		}
 
@@ -39,7 +37,7 @@ namespace Essentia.Deployment.Editor
 		{
 			if (folderStructure is null)
 			{
-				Console.LogError(NullFolderStructureError, moduleName: Package.ModuleName.Deployment);
+				Console.LogError(NullFolderStructureError, s_consoleOutputConfig);
 				return;
 			}
 
@@ -53,7 +51,7 @@ namespace Essentia.Deployment.Editor
 			}
 
 			AssetDatabase.Refresh();
-			Console.Log(successMessage ?? FolderStructureGeneratedMessage, moduleName: Package.ModuleName.Deployment);
+			Console.Log(successMessage ?? FolderStructureGeneratedMessage, s_consoleOutputConfig);
 		}
 
 		public static void DeleteGitkeepFiles(string rootFolderName)
@@ -65,7 +63,7 @@ namespace Essentia.Deployment.Editor
 				File.Delete(gitkeepFile);
 
 			AssetDatabase.Refresh();
-			Console.Log(GitKeepFilesDeletedMessage, moduleName: Package.ModuleName.Deployment);
+			Console.Log(GitKeepFilesDeletedMessage, s_consoleOutputConfig);
 		}
 	}
 }

@@ -4,6 +4,8 @@ namespace Essentia
     {
         private const string AccessingUnestablishedSocketError = "Attempt to access an unestablished socket.";
 
+        private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(typeof(Script), false, true);
+
         private Socket _socket;
 
         public Script(Socket socket = null)
@@ -16,7 +18,7 @@ namespace Essentia
             get
             {
                 if (_socket is null)
-                    Console.LogError<Script>(AccessingUnestablishedSocketError, isModuleName: false);
+                    Console.LogError(AccessingUnestablishedSocketError, s_consoleOutputConfig);
 
                 return _socket;
             }
