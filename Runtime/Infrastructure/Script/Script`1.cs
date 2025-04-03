@@ -7,5 +7,7 @@ namespace Essentia
         public Script(Func<Type, Socket<T>> socketExtractor) : base (socketExtractor) { }
 
         public Script(Socket<T> socket = null) : base(socket) { }
+
+        protected T Config => Socket.Config;
     }
 }

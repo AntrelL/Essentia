@@ -20,7 +20,7 @@ namespace Essentia
             Socket = socket;
         }
 
-        public T Socket
+        protected T Socket
         {
             get
             {
