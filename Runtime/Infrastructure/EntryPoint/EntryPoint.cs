@@ -17,6 +17,8 @@ namespace Essentia.Infrastructure
 
         private void Awake()
         {
+            HideSystemObject();
+
             List<Type> derivedTypes = GetDerivedTypes(typeof(Program));
 
             if (VerifyNumberOfMainGameTypes(derivedTypes) == false)
@@ -70,5 +72,7 @@ namespace Essentia.Infrastructure
 
             return true;
         }
+
+        private void HideSystemObject() => DontDestroyOnLoad(this);
     }
 }
