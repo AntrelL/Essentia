@@ -84,14 +84,26 @@ namespace Essentia.Infrastructure.Editor
 
             Type[] suitableTypes = allTypes
                 .Where(type => 
-                    type.Name == prefab.name &&
-                    typeof(Entity).IsAssignableFrom(type))
+                    type.Name == prefab.name && IsEntity(type))
                 .ToArray();
 
-            if (CheckNumberOfEntityTypes(suitableTypes, prefab.name) == false)
+                if (CheckNumberOfEntityTypes(suitableTypes, prefab.name) == false)
                 return emptyConnectionData;
 
             return new(suitableTypes[0].FullName, entry.address);
+        }
+
+        private static bool IsEntity(Type type)
+        {
+            Type baseType = type.BaseType;
+
+            if (baseType == typeof(Entity))
+                return true;
+
+            if (baseType.IsGenericType && baseType.GetGenericTypeDefinition() == typeof(Entity<>))
+                return true;
+
+            return false;
         }
 
         private static bool CheckNumberOfEntityTypes(Type[] types, string prefabName)
