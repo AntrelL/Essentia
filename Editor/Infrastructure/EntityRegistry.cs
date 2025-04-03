@@ -26,6 +26,9 @@ namespace Essentia.Infrastructure.Editor
         [MenuItem(Package.Name + "/Update Entity Registry")]
         public static void Update()
         {
+            if (EditorApplication.isUpdating)
+                return;
+
             List<EntityConnectionData> entityConnections = GetEntityConnections();
 
             if (Installer.IsPackageDeployed == false)
