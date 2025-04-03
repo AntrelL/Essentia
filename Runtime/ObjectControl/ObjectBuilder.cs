@@ -10,6 +10,7 @@ namespace Essentia.ObjectControl
     public static class ObjectBuilder
     {
         private const string FailedToCreateObjectError = "Failed to create object.";
+        private const string CloneMarkerText = "(Clone)";
 
         private static readonly ConsoleOutputConfig s_consoleOutputConfig = 
             new(typeof(ObjectBuilder), true, true);
@@ -37,7 +38,10 @@ namespace Essentia.ObjectControl
 
         private static void SetUpInstance(UnityGameObject instance, ObjectСreationСonfig creationСonfig)
         {
+            creationСonfig ??= new();
             Transform transform = instance.transform;
+
+            instance.name = creationСonfig.Name ?? instance.name.Remove(CloneMarkerText);
 
             transform.position = creationСonfig.Position ?? transform.position;
             transform.rotation = creationСonfig.Rotation ?? transform.rotation;
