@@ -22,7 +22,6 @@ namespace Essentia.Infrastructure.Editor
 
         public int callbackOrder => 0;
 
-        [InitializeOnLoadMethod]
         [MenuItem(Package.Name + "/Update Entity Registry")]
         public static void Update()
         {
@@ -43,6 +42,20 @@ namespace Essentia.Infrastructure.Editor
         }
 
         public void OnPreprocessBuild(BuildReport report) => Update();
+
+        [InitializeOnLoadMethod]
+        private static void Initialize()
+        {
+            EditorApplication.CallbackFunction updater = null;
+
+            updater = () =>
+            {
+                Update();
+                EditorApplication.update -= updater;
+            };
+
+            EditorApplication.update += updater;
+        }
 
         private static List<EntityConnectionData> GetEntityConnections()
         {
