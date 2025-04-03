@@ -15,9 +15,6 @@ namespace Essentia.Infrastructure.Editor
 {
     public class EntityRegistry : IPreprocessBuildWithReport
 	{
-		private const string DataFilePath = Package.PathToDynamicDataFolder + "/" +
-			nameof(EntityRegistryData) + Metadata.AssetExtension;
-
 		private const string NoMatchingEntityTypeErrorPart = "No matching type for entity named";
         private const string MultipleMatchingEntityTypesErrorPart = "Multiple matching types for entity named";
 
@@ -35,7 +32,7 @@ namespace Essentia.Infrastructure.Editor
 				return;
 			}
 
-			SettingsFile<EntityRegistryData>.Load(DataFilePath, true)
+			SettingsFile<EntityRegistryData>.Load(EntityRegistryReader.DataFilePath, true)
 				.MarkAsAddressable(Package.SystemAddressablesGroupName)
 				.Edit(entityRegistryData => entityRegistryData.Connections = entityConnections, true);
 		}
