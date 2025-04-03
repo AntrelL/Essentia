@@ -3,11 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UnityEngine;
 
 namespace Essentia.Infrastructure
 {
-    public class EntryPoint : MonoBehaviour
+    public class EntryPoint : MonoScript
     {
 		private const string MissingEntryPointMethodError = "Entry point method not found.";
 		private const string MissingMainGameTypeError = "Main game type not found.";
