@@ -1,6 +1,5 @@
 using Essentia.Infrastructure;
 using System;
-using UnityEngine;
 using UnityEngine.AddressableAssets;
 
 using UnityGameObject = UnityEngine.GameObject;
@@ -31,21 +30,21 @@ namespace Essentia.ObjectControl
             return instance;
         }
 
-        public static T CreateNew<T>(Type type, ObjectСreationСonfig сreationСonfig = null) where T : Component
+        public static T CreateNew<T>(Type type, ObjectСreationСonfig сreationСonfig = null) where T : UnityEngine.Component
         {
             return CreateNew(type, сreationСonfig).GetComponent<T>();
         }
 
-        private static void SetUpInstance(UnityGameObject instance, ObjectСreationСonfig creationСonfig)
+        private static void SetUpInstance(GameObject instance, ObjectСreationСonfig creationСonfig)
         {
             creationСonfig ??= new();
-            Transform transform = instance.transform;
+            Transform transform = instance.Transform;
 
-            instance.name = creationСonfig.Name ?? instance.name.Remove(CloneMarkerText);
+            instance.Name = creationСonfig.Name ?? instance.Name.Remove(CloneMarkerText);
 
-            transform.position = creationСonfig.Position ?? transform.position;
-            transform.rotation = creationСonfig.Rotation ?? transform.rotation;
-            transform.SetParent(creationСonfig.Parent ?? transform.parent, creationСonfig.InWorldSpace);
+            transform.Position = creationСonfig.Position ?? transform.Position;
+            transform.Rotation = creationСonfig.Rotation ?? transform.Rotation;
+            transform.SetParent(creationСonfig.Parent ?? transform.Parent, creationСonfig.InWorldSpace);
 
             instance.SetActive(creationСonfig.Active);
         }

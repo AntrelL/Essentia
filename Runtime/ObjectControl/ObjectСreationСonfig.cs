@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace Essentia.ObjectControl
 {
     public class ObjectСreationСonfig
