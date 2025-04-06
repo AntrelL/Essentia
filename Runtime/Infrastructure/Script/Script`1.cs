@@ -9,5 +9,9 @@ namespace Essentia
         public Script(Socket<T> socket = null) : base(socket) { }
 
         protected T Config => Socket.Config;
+
+        protected GameObject GameObject => Socket.GameObject;
+
+        protected Transform Transform => Socket.GameObject.Transform;
     }
 }

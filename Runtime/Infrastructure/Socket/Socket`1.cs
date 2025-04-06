@@ -13,9 +13,14 @@ namespace Essentia
         public Socket(SocketHandle handle) : base(handle)
         {
             if (handle.Config is T)
+            {
+                handle.Config.Initialize();
                 Config = (T)(IScriptConfigAccessPoint)handle.Config;
+            }
             else
+            {
                 Console.LogError(ConfigTypeMismatchError, s_consoleOutputConfig);
+            }
         }
 
         public T Config { get; private set; }
