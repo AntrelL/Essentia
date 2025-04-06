@@ -1,6 +1,6 @@
 {
     "name": "com.antrel.essentia",
-    "version": "1.5.3",
+    "version": "1.6.0",
     "unity": "2022.3",
     "displayName": "Essentia",
     "description": "It is a framework that makes it easy to create beautiful, clean and secure architecture for games.",
