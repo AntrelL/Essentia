@@ -2,7 +2,7 @@ using System;
 
 namespace Essentia
 {
-    public abstract class Script<T> : BaseScript<Socket<T>> where T : ScriptConfig
+    public abstract class Script<T> : BaseScript<Socket<T>> where T : IScriptConfigAccessPoint
     {
         public Script(Func<Type, Socket<T>> socketExtractor) : base (socketExtractor) { }
 

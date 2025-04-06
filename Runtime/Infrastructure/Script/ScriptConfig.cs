@@ -2,7 +2,7 @@ using Essentia.Infrastructure;
 
 namespace Essentia
 {
-    public class ScriptConfig : MonoScript
+    public class ScriptConfig : MonoScript, IScriptConfigAccessPoint
     {
     }
 }
