@@ -1,8 +1,8 @@
+using Essentia.Editor;
 using Essentia.Infrastructure;
 using Essentia.Reflection;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
-using UnityEngine.SceneManagement;
 
 using UnityGameObject = UnityEngine.GameObject;
 
@@ -24,7 +24,7 @@ namespace Essentia.Deployment.Editor
         private const string FailedToInitializeAddressablesError = "Failed to initialize addressables.";
 
         private const string MainSceneInitializedMessage = "Main scene initialized.";
-        private const string FailedToCreateMainSceneError = "Failed to create main scene.";
+        private const string FailedToInitializeMainSceneError = "Failed to initialize main scene.";
 
         private const string FolderPathWithFolderStructures = 
             Package.Path + "/Editor/Deployment/FolderArchitecture/FolderStructures/";
@@ -119,14 +119,9 @@ namespace Essentia.Deployment.Editor
         private static bool TryInitializeMainScene(out string errorMessage)
         {
             errorMessage = null;
+            Scene mainScene = new(Package.PathToMainScene);
 
-            if (SceneBuilder.TryCreateNew(Package.PathToMainScene, out Scene mainScene) == false)
-            {
-                errorMessage = FailedToCreateMainSceneError;
-                return false;
-            }
-
-            SceneBuilder.CreateObjectInScene(mainScene, (UnityGameObject gameObject) =>
+            mainScene.AddObject((UnityGameObject gameObject) =>
             {
                 gameObject.AddComponent<EntryPoint>();
                 gameObject.name = Package.SystemObjectName;
@@ -134,6 +129,12 @@ namespace Essentia.Deployment.Editor
 
                 return gameObject;
             });
+
+            if (mainScene.Save() == false)
+            {
+                errorMessage = FailedToInitializeMainSceneError;
+                return false;
+            }
 
             Console.Log(MainSceneInitializedMessage, s_consoleOutputConfig);
             return true;
