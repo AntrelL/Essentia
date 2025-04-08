@@ -12,6 +12,7 @@ namespace Essentia.Reflection
             BindingFlags.NonPublic | BindingFlags.Static;
 
         public const string GitKeepFileName = ".gitkeep";
+        public const string UnityExtension = ".unity";
         public const string AssetExtension = ".asset";
         public const string PrefabExtension = ".prefab";
         public const string AssetRootFolderName = "Assets";

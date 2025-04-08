@@ -1,6 +1,10 @@
+using Essentia.Infrastructure;
 using Essentia.Reflection;
 using UnityEditor;
 using UnityEditor.AddressableAssets;
+using UnityEngine.SceneManagement;
+
+using UnityGameObject = UnityEngine.GameObject;
 
 namespace Essentia.Deployment.Editor
 {
@@ -18,6 +22,9 @@ namespace Essentia.Deployment.Editor
 
         private const string AddressablesInitializedMessage = "Addressables initialized.";
         private const string FailedToInitializeAddressablesError = "Failed to initialize addressables.";
+
+        private const string MainSceneInitializedMessage = "Main scene initialized.";
+        private const string FailedToCreateMainSceneError = "Failed to create main scene.";
 
         private const string FolderPathWithFolderStructures = 
             Package.Path + "/Editor/Deployment/FolderArchitecture/FolderStructures/";
@@ -71,6 +78,9 @@ namespace Essentia.Deployment.Editor
             if (TryInitializeAddressables(out errorMessage) == false)
                 return false;
 
+            if (TryInitializeMainScene(out errorMessage) == false)
+                return false;
+
             return true;
         }
 
@@ -103,6 +113,29 @@ namespace Essentia.Deployment.Editor
             settings.CreateGroup(Package.SystemAddressablesGroupName, false, false, false, null);
 
             Console.Log(AddressablesInitializedMessage, s_consoleOutputConfig);
+            return true;
+        }
+
+        private static bool TryInitializeMainScene(out string errorMessage)
+        {
+            errorMessage = null;
+
+            if (SceneBuilder.TryCreateNew(Package.PathToMainScene, out Scene mainScene) == false)
+            {
+                errorMessage = FailedToCreateMainSceneError;
+                return false;
+            }
+
+            SceneBuilder.CreateObjectInScene(mainScene, (UnityGameObject gameObject) =>
+            {
+                gameObject.AddComponent<EntryPoint>();
+                gameObject.name = Package.SystemObjectName;
+                gameObject.isStatic = true;
+
+                return gameObject;
+            });
+
+            Console.Log(MainSceneInitializedMessage, s_consoleOutputConfig);
             return true;
         }
     }
