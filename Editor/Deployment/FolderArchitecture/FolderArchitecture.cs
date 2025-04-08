@@ -13,14 +13,62 @@ namespace Essentia.Deployment.Editor
 
         private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(Package.ModuleName.Deployment, null);
 
-        public static FolderStructure LoadFolderStructure(string path)
+        public static bool TryLoadFolderStructure(string path, out FolderStructure folderStructure, out string errorMessage)
         {
-            FolderStructure folderStructure = AssetDatabase.LoadAssetAtPath<FolderStructure>(path);
+            errorMessage = null;
+
+            folderStructure = AssetDatabase.LoadAssetAtPath<FolderStructure>(path);
 
             if (folderStructure is null)
-                Console.LogError($"{FolderStructureNotFoundErrorPart} {path}.", s_consoleOutputConfig);
-            
+            {
+                errorMessage = $"{FolderStructureNotFoundErrorPart} {path}.";
+                return false;
+            }
+                
+            return true;
+        }
+
+        public static FolderStructure LoadFolderStructure(string path)
+        {
+            if (TryLoadFolderStructure(path, out FolderStructure folderStructure, out string errorMessage) == false)
+                Console.LogError(errorMessage, s_consoleOutputConfig);  
+
             return folderStructure;
+        }
+
+        public static bool TryGenerate(
+            string pathToFolderStructure, out string errorMessage, bool createGitKeepFiles = true)
+        {
+            TryLoadFolderStructure(pathToFolderStructure, out FolderStructure folderStructure, out errorMessage);
+
+            if (folderStructure is null)
+                return false;
+            
+            return TryGenerate(folderStructure, out errorMessage, createGitKeepFiles);
+        }
+
+        public static bool TryGenerate(
+            FolderStructure folderStructure, out string errorMessage, bool createGitKeepFiles = true)
+        {
+            errorMessage = null;
+
+            if (folderStructure is null)
+            {
+                errorMessage = NullFolderStructureError;
+                return false;
+            }
+
+            foreach (string folder in folderStructure.Folders)
+            {
+                if (Directory.Exists(folder) == false)
+                    Directory.CreateDirectory(folder);
+
+                if (createGitKeepFiles)
+                    File.WriteAllText(Path.Combine(folder, Metadata.GitKeepFileName), string.Empty);
+            }
+
+            AssetDatabase.Refresh();
+            return true;
         }
 
         public static void Generate(
@@ -35,22 +83,12 @@ namespace Essentia.Deployment.Editor
         public static void Generate(
             FolderStructure folderStructure, bool createGitKeepFiles = true, string successMessage = null)
         {
-            if (folderStructure is null)
+            if (TryGenerate(folderStructure, out string errorMessage, createGitKeepFiles) == false)
             {
-                Console.LogError(NullFolderStructureError, s_consoleOutputConfig);
+                Console.LogError(errorMessage, s_consoleOutputConfig);
                 return;
             }
 
-            foreach (string folder in folderStructure.Folders)
-            {
-                if (Directory.Exists(folder) == false)
-                    Directory.CreateDirectory(folder);
-
-                if (createGitKeepFiles)
-                    File.WriteAllText(Path.Combine(folder, Metadata.GitKeepFileName), string.Empty);
-            }
-
-            AssetDatabase.Refresh();
             Console.Log(successMessage ?? FolderStructureGeneratedMessage, s_consoleOutputConfig);
         }
 

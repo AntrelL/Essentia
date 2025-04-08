@@ -13,22 +13,17 @@ using UnityGameObject = UnityEngine.GameObject;
 
 namespace Essentia.Infrastructure.Editor
 {
-    public class EntityRegistry : IPreprocessBuildWithReport
+    public class EntityRegistry
     {
         private const string NoMatchingEntityTypeErrorPart = "No matching type for entity named";
         private const string MultipleMatchingEntityTypesErrorPart = "Multiple matching types for entity named";
 
         private static readonly ConsoleOutputConfig s_consoleOutputConfig = new(typeof(EntityRegistry), true, true);
-
-        public int callbackOrder => 0;
-
-        [MenuItem(Package.Name + "/Update Entity Registry")]
+        
         public static void Update()
         {
             if (EditorApplication.isUpdating)
                 return;
-
-            List<EntityConnectionData> entityConnections = GetEntityConnections();
 
             if (Installer.IsPackageDeployed == false)
             {
@@ -36,25 +31,11 @@ namespace Essentia.Infrastructure.Editor
                 return;
             }
 
+            List<EntityConnectionData> entityConnections = GetEntityConnections();
+
             SettingsFile<EntityRegistryData>.Load(EntityRegistryReader.DataFilePath, true)
                 .MarkAsAddressable(Package.SystemAddressablesGroupName)
                 .Edit(entityRegistryData => entityRegistryData.Connections = entityConnections, true);
-        }
-
-        public void OnPreprocessBuild(BuildReport report) => Update();
-
-        [InitializeOnLoadMethod]
-        private static void Initialize()
-        {
-            EditorApplication.CallbackFunction updater = null;
-
-            updater = () =>
-            {
-                Update();
-                EditorApplication.update -= updater;
-            };
-
-            EditorApplication.update += updater;
         }
 
         private static List<EntityConnectionData> GetEntityConnections()

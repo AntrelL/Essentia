@@ -32,6 +32,16 @@ namespace Essentia.Deployment.Editor
 
         public static bool IsPackageDeployed => AssetDatabase.IsValidFolder(Package.PathToDynamicDataFolder);
 
+        public static bool Update()
+        {
+            bool isPackageDeployed = IsPackageDeployed;
+
+            if (isPackageDeployed == false)
+                Deploy();
+
+            return isPackageDeployed ^ IsPackageDeployed;
+        }
+
         public static void Deploy()
         {
             Console.Log(DeploymentStartMessage, s_consoleOutputConfig);
@@ -55,31 +65,45 @@ namespace Essentia.Deployment.Editor
                 return false;
             }
 
-            GenerateFolderStructures();
-            InitializeAddressables();
+            if (TryGenerateFolderStructures(out errorMessage) == false)
+                return false;
+
+            if (TryInitializeAddressables(out errorMessage) == false)
+                return false;
 
             return true;
         }
 
-        private static void GenerateFolderStructures()
+        private static bool TryGenerateFolderStructures(out string errorMessage)
         {
-            FolderArchitecture.Generate(FolderStructurePathForPackageData, successMessage: PackageFoldersGeneratedMessage);
-            FolderArchitecture.Generate(FolderStructurePathForUserData, successMessage: UserFoldersGeneratedMessage);
+            if (FolderArchitecture.TryGenerate(FolderStructurePathForPackageData, out errorMessage) == false)
+                return false;
+
+            Console.Log(PackageFoldersGeneratedMessage, s_consoleOutputConfig);
+
+            if (FolderArchitecture.TryGenerate(FolderStructurePathForUserData, out errorMessage) == false)
+                return false;
+
+            Console.Log(UserFoldersGeneratedMessage, s_consoleOutputConfig);
+
+            return true;
         }
 
-        private static void InitializeAddressables()
+        private static bool TryInitializeAddressables(out string errorMessage)
         {
+            errorMessage = null;
             var settings = AddressableAssetSettingsDefaultObject.GetSettings(true);
 
             if (settings is null)
             {
-                Console.LogError(FailedToInitializeAddressablesError, s_consoleOutputConfig);
-                return;
+                errorMessage = FailedToInitializeAddressablesError;
+                return false;
             }
 
             settings.CreateGroup(Package.SystemAddressablesGroupName, false, false, false, null);
 
             Console.Log(AddressablesInitializedMessage, s_consoleOutputConfig);
+            return true;
         }
     }
 }
