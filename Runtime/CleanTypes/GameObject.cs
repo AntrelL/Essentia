@@ -2,7 +2,7 @@ using UnityGameObject = UnityEngine.GameObject;
 
 namespace Essentia
 {
-    public class GameObject
+    public partial class GameObject
     {
         private UnityGameObject _unityGameObject;
 

@@ -2,7 +2,7 @@ using UnityVector3 = UnityEngine.Vector3;
 
 namespace Essentia
 {
-    public struct Vector3
+    public partial struct Vector3
     {
         public Vector3(float x = default, float y = default, float z = default)
         {

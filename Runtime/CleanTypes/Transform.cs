@@ -2,7 +2,7 @@ using UnityTransform = UnityEngine.Transform;
 
 namespace Essentia
 {
-    public class Transform
+    public partial class Transform
     {
         private UnityTransform _unityTransform;
 

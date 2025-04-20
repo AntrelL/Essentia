@@ -2,7 +2,7 @@ using UnityQuaternion = UnityEngine.Quaternion;
 
 namespace Essentia
 {
-    public struct Quaternion
+    public partial struct Quaternion
     {
         public Quaternion(float x = default, float y = default, float z = default, float w = default)
         {
