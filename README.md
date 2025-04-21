@@ -1,6 +1,6 @@
 # Essentia
 
-### Version: **1.7.0**
+### Version: **1.7.1**
 
 It is a framework that makes it easy to create beautiful, clean and secure architecture for games.
 
